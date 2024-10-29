@@ -55,10 +55,6 @@ public class UserService implements UserDetailsService {
         userRepository.deleteById(userId);
     }
 
-    public User findUserByUsername(String username) {
-        return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
-    }
-
     @Transactional
     public void updateUser(Long id, User user) {
         User userToUpdate = findUserById(id);

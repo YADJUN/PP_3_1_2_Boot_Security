@@ -1,9 +1,10 @@
 package ru.kata.spring.boot_security.demo.models;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 
-import javax.management.ConstructorParameters;
 import javax.persistence.*;
 import java.util.Set;
 
