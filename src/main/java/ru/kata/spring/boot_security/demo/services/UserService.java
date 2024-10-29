@@ -19,7 +19,7 @@ import java.util.Optional;
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository, @Lazy PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -41,29 +41,30 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll();
     }
 
-    public boolean saveUser(User user) {
-        Optional<User> optionalUser  = userRepository.findById(user.getId());
-
+    @Transactional
+    public void saveUser(User user) {
+        //Optional<User> optionalUser = userRepository.findById(user.getId());
         user.setRoles(Collections.singleton(new Role(1L, "ROLE_USER")));
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
-        return true;
     }
 
-    public boolean deleteUser(Long userId) {
-        if (userRepository.findById(userId).isPresent()) {
-            userRepository.deleteById(userId);
-            return true;
-        }
-        return false;
+    @Transactional
+    public void deleteUser(Long userId) {
+        userRepository.findById(userId);
+        userRepository.deleteById(userId);
     }
-//
-//    public List<User> usergtList(Long idMin) {
-//        return em.createQuery("SELECT u FROM User u WHERE u.id > :paramId", User.class)
-//                .setParameter("paramId", idMin).getResultList();
-//    }
 
-//    private Collection<? extends GrantedAuthority> getAuthorities(Collection<Role> roles) {
-//        return roles.stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
-//    }
+    public User findUserByUsername(String username) {
+        return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
+    }
+
+    @Transactional
+    public void updateUser(Long id, User user) {
+        User userToUpdate = findUserById(id);
+        userToUpdate.setUsername(user.getUsername());
+        userToUpdate.setAge(user.getAge());
+        userToUpdate.setPassword(passwordEncoder.encode(user.getPassword()));
+    }
+
 }

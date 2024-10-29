@@ -1,10 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>you are admin</title>
+    <title>Users</title>
 </head>
 <body>
+<table border="1">
 
+    <tr>
+        <th>Name</th>
+        <th>Age</th>
+        <th> Operations</th>
+
+    </tr>
+    <tbody>
+    <tr th:each="user : ${users}">
+
+        <td th:text="${user.getUsername()}" width=100/>
+        <td th:text="${user.getAge()}" width="50"></td>
+        <td>
+            <a th:href="@{get(id = ${user.getId()})}"> Edit </a>
+        </td>
+    </tr>
+
+    </tbody>
+</table>
+<br>
+<a href="/save">Add new user</a>
+<br>
+<br>
+<a href="http://localhost:8080/logout">Logout</a>
 </body>
 </html>
