@@ -42,7 +42,7 @@ public class SecurityController {
     @GetMapping("/get")
     public String getUserById(@RequestParam("id") Long id, Model model) {
         model.addAttribute("user", userService.findUserById(id));
-        return "informationAboutUser";
+        return "userInfo";
     }
 
     @GetMapping("save")
