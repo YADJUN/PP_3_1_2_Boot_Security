@@ -8,6 +8,7 @@
 <p th:text="'ID:' + ${user.getId()}"></p>
 <p th:text="'Name:' + ${user.getUsername()}"></p>
 <p th:text="'Age:' + ${user.getAge()}"></p>
+<p th:text="'Role:' + ${user.getRoles()}"></p>
 <br>
 <a th:href="@{edit(id=${user.getId()})}">Update</a>
 <br>

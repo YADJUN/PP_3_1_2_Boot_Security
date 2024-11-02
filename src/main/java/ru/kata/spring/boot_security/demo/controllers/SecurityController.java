@@ -4,17 +4,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
+import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
 import ru.kata.spring.boot_security.demo.services.UserService;
+
+import java.util.List;
 
 @Controller
 public class SecurityController {
     private final UserService userService;
+    private final RoleRepository roleRepository;
 
     @Autowired
-    public SecurityController(UserService userService) {
+    public SecurityController(UserService userService, RoleRepository roleRepository) {
         this.userService = userService;
+        this.roleRepository = roleRepository;
     }
 
     @GetMapping("/user")
@@ -39,6 +48,10 @@ public class SecurityController {
     @GetMapping("save")
     public String saveUser(Model model) {
         model.addAttribute("user", new User());
+        List<Role> allRoles = roleRepository.findAll();
+        model.addAttribute("adminRole", allRoles.get(1));
+        model.addAttribute("userRole", allRoles.get(0));
+
         return "/saveUser";
     }
 
@@ -51,6 +64,9 @@ public class SecurityController {
     @GetMapping("edit")
     public String editUser(@RequestParam("id") Long id, Model model) {
         model.addAttribute("user", userService.findUserById(id));
+        List<Role> allRoles = roleRepository.findAll();
+        model.addAttribute("adminRole", allRoles.get(1));
+        model.addAttribute("userRole", allRoles.get(0));
         return "/edit";
     }
 

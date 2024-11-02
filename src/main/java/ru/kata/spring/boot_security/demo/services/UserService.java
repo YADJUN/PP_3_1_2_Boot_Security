@@ -1,5 +1,7 @@
 package ru.kata.spring.boot_security.demo.services;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,15 +18,22 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class UserService implements UserDetailsService {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    private UserRepository userRepository;
+    private PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, @Lazy PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
+    @Autowired
+    public void setPasswordEncoder(@Lazy PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
     }
+
+    @Autowired
+    public void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
 
     @Transactional
     @Override
@@ -43,7 +52,9 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public void saveUser(User user) {
-        //Optional<User> optionalUser = userRepository.findById(user.getId());
+        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+            throw new RuntimeException("Username already exists");
+        }
         user.setRoles(Collections.singleton(new Role(1L, "ROLE_USER")));
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
@@ -61,6 +72,9 @@ public class UserService implements UserDetailsService {
         userToUpdate.setUsername(user.getUsername());
         userToUpdate.setAge(user.getAge());
         userToUpdate.setPassword(passwordEncoder.encode(user.getPassword()));
+        userToUpdate.setRoles(user.getRoles());
+        userRepository.save(userToUpdate);
+
     }
 
 }

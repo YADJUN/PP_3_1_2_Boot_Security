@@ -16,10 +16,10 @@
     <tbody>
     <tr th:each="user : ${users}">
 
-        <td th:text="${user.getUsername()}" width=100/>
-        <td th:text="${user.getAge()}" width="50"></td>
+        <td th:text="${user.username}" width=100/>
+        <td th:text="${user.age}" width="50"></td>
         <td>
-            <a th:href="@{get(id = ${user.getId()})}"> Edit </a>
+            <a th:href="@{get(id = ${user.getId()})}"> More </a>
         </td>
     </tr>
 
@@ -28,7 +28,9 @@
 <br>
 <a href="/save">Add new user</a>
 <br>
+<br>
 <a href="/user">My profile</a>
+<br>
 <br>
 <a href="http://localhost:8080/logout">Logout</a>
 </body>

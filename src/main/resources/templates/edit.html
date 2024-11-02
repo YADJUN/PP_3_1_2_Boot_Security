@@ -7,12 +7,33 @@
 <body>
 <form th:method="POST" th:action="@{/update(id = ${user.getId()})}" th:object="${user}">
     <label for="name"> Name: </label>
-    <input type="text" th:field="*{username}" id="name">
+    <input type="text" th:field="*{username}" id="name" required>
+    <p></p>
     <label for="age"> Age: </label>
-    <input type="text" th:field="*{age}" id="age">
+    <input type="number" th:field="*{age}" id="age" required>
+    <p></p>
     <label for="password"> Password: </label>
-    <input type="text" th:field="*{password}" id="password">
+    <input type="password" th:field="*{password}" id="password" required>
+    <p></p>
+    <label>Role:
+        <input type="checkbox" name="roles"
+               th:text="ADMIN"
+               th:value="${adminRole.id}"
+               th:field="*{roles}"
+
+        />
+
+    </label>
+                <label>
+                <input type = "checkbox" required name="roles"
+                       th:text="USER"
+                       th:value="${userRole.id}"
+                       th:field="*{roles}"
+                />
+                </label>
+
     <br>
+    <p></p>
     <input type="submit" value="Update"/>
 
 </form>
