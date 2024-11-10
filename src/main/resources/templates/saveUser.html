@@ -6,7 +6,7 @@
     <title>Create User</title>
 </head>
 <body>
-<form th:method="POST" th:action="@{createUser}" th:object="${user}">
+<form th:method="POST" th:action="@{createUser(roles = ${user.getRoles()})}" th:object="${user}">
     <label for="name"> Name: </label>
     <input type="text" required th:field="*{username}" id="name">
     <label for="age"> Age: </label>
@@ -15,7 +15,14 @@
     <input type="text" required th:field="*{password}" id="password">
 
     <p>
-
+        <label>
+            <input type="checkbox" name="roles"
+                   th:each="roles : ${allRoles}"
+                   th:text="${roles.name.replaceAll('ROLE_','')}"
+                   th:value="${roles.id}"
+                   th:field="*{roles}"
+            />
+        </label>
     </p>
     <input type="submit" value="Add"/>
 </form>

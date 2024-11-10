@@ -1,4 +1,4 @@
-package ru.kata.spring.boot_security.demo.controllers;
+package ru.kata.spring.boot_security.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -8,22 +8,23 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import ru.kata.spring.boot_security.demo.models.Role;
-import ru.kata.spring.boot_security.demo.models.User;
-import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
-import ru.kata.spring.boot_security.demo.services.UserService;
+import ru.kata.spring.boot_security.demo.model.Role;
+import ru.kata.spring.boot_security.demo.model.User;
+import ru.kata.spring.boot_security.demo.service.RoleService;
+import ru.kata.spring.boot_security.demo.service.UserService;
 
 import java.util.List;
+import java.util.Set;
 
 @Controller
 public class SecurityController {
     private final UserService userService;
-    private final RoleRepository roleRepository;
+    private final RoleService roleService;
 
     @Autowired
-    public SecurityController(UserService userService, RoleRepository roleRepository) {
+    public SecurityController(UserService userService, RoleService roleService) {
         this.userService = userService;
-        this.roleRepository = roleRepository;
+        this.roleService = roleService;
     }
 
     @GetMapping("/user")
@@ -45,38 +46,35 @@ public class SecurityController {
         return "userInfo";
     }
 
-    @GetMapping("save")
+    @GetMapping("/save")
     public String saveUser(Model model) {
         model.addAttribute("user", new User());
-        List<Role> allRoles = roleRepository.findAll();
-        model.addAttribute("adminRole", allRoles.get(1));
-        model.addAttribute("userRole", allRoles.get(0));
-
+        List<Role> allRoles = roleService.findAll();
+        model.addAttribute("allRoles", allRoles);
         return "/saveUser";
     }
 
-    @PostMapping("createUser")
-    public String createUser(@ModelAttribute("user") User user) {
-        userService.saveUser(user);
+    @PostMapping("/createUser")
+    public String createUser(@ModelAttribute("user") User user, @RequestParam("roles") Set<Role> roles) {
+        userService.createUser(user, roles);
         return "redirect:/admin";
     }
 
-    @GetMapping("edit")
+    @GetMapping("/edit")
     public String editUser(@RequestParam("id") Long id, Model model) {
         model.addAttribute("user", userService.findUserById(id));
-        List<Role> allRoles = roleRepository.findAll();
-        model.addAttribute("adminRole", allRoles.get(1));
-        model.addAttribute("userRole", allRoles.get(0));
+        List<Role> allRoles = roleService.findAll();
+        model.addAttribute("roles", allRoles);
         return "/edit";
     }
 
-    @PostMapping("update")
-    public String updateUser(@ModelAttribute("user") User user, @RequestParam("id") Long id) {
-        userService.updateUser(id, user);
+    @PostMapping("/update")
+    public String updateUser(@ModelAttribute("user") User user, @RequestParam("roles") Set<Role> roles, @RequestParam("id") Long id) {
+        userService.updateUser(id, user, roles);
         return "redirect:/admin";
     }
 
-    @PostMapping("delete")
+    @PostMapping("/delete")
     public String deleteUser(@RequestParam("id") Long id) {
         userService.deleteUser(id);
         return "redirect:/admin";

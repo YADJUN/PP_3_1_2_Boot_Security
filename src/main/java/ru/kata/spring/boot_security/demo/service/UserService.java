@@ -1,4 +1,4 @@
-package ru.kata.spring.boot_security.demo.services;
+package ru.kata.spring.boot_security.demo.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,21 +9,21 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.kata.spring.boot_security.demo.models.Role;
-import ru.kata.spring.boot_security.demo.models.User;
-import ru.kata.spring.boot_security.demo.repositories.UserRepository;
+import ru.kata.spring.boot_security.demo.model.Role;
+import ru.kata.spring.boot_security.demo.model.User;
+import ru.kata.spring.boot_security.demo.repository.UserRepository;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class UserService implements UserDetailsService {
-
+    private static final String ROLE_USER = "ROLE_USER";
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
-
+    private RoleService roleService;
     @Autowired
     public void setPasswordEncoder(@Lazy PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
@@ -55,9 +55,19 @@ public class UserService implements UserDetailsService {
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
             throw new RuntimeException("Username already exists");
         }
-        user.setRoles(Collections.singleton(new Role(1L, "ROLE_USER")));
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
+    }
+
+    @Transactional
+    public void createUser(User user, Set<Role> roles) {
+        if (roles.isEmpty()) {
+            roles.add(roleService.findByName(ROLE_USER));
+            user.setRoles(roles);
+            saveUser(user);
+        } else {
+            saveUser(user);
+        }
     }
 
     @Transactional
@@ -67,14 +77,21 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void updateUser(Long id, User user) {
+    public void updateUser(Long id, User user, Set<Role> roles) {
+        if (roles.isEmpty()) {
+            roles.add(roleService.findByName(ROLE_USER));
+        }
         User userToUpdate = findUserById(id);
         userToUpdate.setUsername(user.getUsername());
         userToUpdate.setAge(user.getAge());
+        userToUpdate.setRoles(roles);
         userToUpdate.setPassword(passwordEncoder.encode(user.getPassword()));
-        userToUpdate.setRoles(user.getRoles());
         userRepository.save(userToUpdate);
 
     }
 
+    @Autowired
+    public void setRoleRepository(RoleService roleService) {
+        this.roleService = roleService;
+    }
 }

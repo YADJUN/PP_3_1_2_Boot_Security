@@ -5,7 +5,7 @@
     <title>Title</title>
 </head>
 <body>
-<form th:method="POST" th:action="@{/update(id = ${user.getId()})}" th:object="${user}">
+<form th:method="POST" th:action="@{/update(id = ${user.getId()}, roles = ${user.setRoles(roles)})}" th:object="${user}">
     <label for="name"> Name: </label>
     <input type="text" th:field="*{username}" id="name" required>
     <p></p>
@@ -17,20 +17,14 @@
     <p></p>
     <label>Role:
         <input type="checkbox" name="roles"
-               th:text="ADMIN"
-               th:value="${adminRole.id}"
+               th:each="role : ${roles}"
+               th:text="${role.name.replaceAll('ROLE_','')}"
+               th:value="${role.id}"
                th:field="*{roles}"
 
         />
 
     </label>
-                <label>
-                <input type = "checkbox" required name="roles"
-                       th:text="USER"
-                       th:value="${userRole.id}"
-                       th:field="*{roles}"
-                />
-                </label>
 
     <br>
     <p></p>
