@@ -7,6 +7,7 @@
 <body>
 <h1>Information about you</h1>
 <form th:method="GET" th:action="@{/user(id = ${user.getId()})}" th:object="${user}">
+
     <p th:text="'Username:' + ${user.getUsername()}">Username: </p>
     <p th:text="'Age:' + ${user.getAge()}">Age: </p>
     <p th:text="'Role:' + ${user.getRoles()}">Role: </p>

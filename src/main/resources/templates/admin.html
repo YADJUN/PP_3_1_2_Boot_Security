@@ -5,24 +5,25 @@
     <title>Users</title>
 </head>
 <body>
-<table border="1">
+<table>
 
     <tr>
         <th>Name</th>
         <th>Age</th>
+        <th>Role</th>
         <th> Operations</th>
 
     </tr>
     <tbody>
     <tr th:each="user : ${users}">
 
-        <td th:text="${user.username}" width=100/>
-        <td th:text="${user.age}" width="50"></td>
+        <td th:text="${user.username}"></td>
+        <td th:text="${user.age}"></td>
+        <td th:text="${user.roles}"></td>
         <td>
             <a th:href="@{get(id = ${user.getId()})}"> More </a>
         </td>
     </tr>
-
     </tbody>
 </table>
 <br>

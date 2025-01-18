@@ -10,16 +10,16 @@
     <label for="name"> Name: </label>
     <input type="text" required th:field="*{username}" id="name">
     <label for="age"> Age: </label>
-    <input type="number" required th:field="*{age}" id="age">
+    <input type="number" min="1" max="130" required th:field="*{age}" id="age">
     <label for="password"> Password: </label>
     <input type="text" required th:field="*{password}" id="password">
 
     <p>
         <label>
             <input type="checkbox" name="roles"
-                   th:each="roles : ${allRoles}"
-                   th:text="${roles.name.replaceAll('ROLE_','')}"
-                   th:value="${roles.id}"
+                   th:each="role : ${allRoles}"
+                   th:text="${role.name.replaceAll('ROLE_','')}"
+                   th:value="${role.id}"
                    th:field="*{roles}"
             />
         </label>
