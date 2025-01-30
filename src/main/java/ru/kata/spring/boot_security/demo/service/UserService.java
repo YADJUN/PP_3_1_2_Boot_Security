@@ -2,7 +2,6 @@ package ru.kata.spring.boot_security.demo.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,7 +17,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
-@RequiredArgsConstructor(onConstructor_ = {@Autowired})
+@RequiredArgsConstructor
 public class UserService implements UserDetailsService {
     private static final String ROLE_USER = "ROLE_USER";
     private UserRepository userRepository;
@@ -26,7 +25,7 @@ public class UserService implements UserDetailsService {
     private RoleService roleService;
 
     @Autowired
-    public void setPasswordEncoder(@Lazy PasswordEncoder passwordEncoder) {
+    public void setPasswordEncoder( PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
     }
 
